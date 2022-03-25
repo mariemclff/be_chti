@@ -1,0 +1,195 @@
+
+
+
+ARM Macro Assembler    Page 1 
+
+
+    1 00000000                 PRESERVE8
+    2 00000000                 THUMB
+    3 00000000         
+    4 00000000                 import           GPIOB_Set
+    5 00000000                 import           GPIOB_Clear
+    6 00000000                 export           timer_callback
+    7 00000000         ; ====================== zone de réservation de données,
+                         ======================================
+    8 00000000         ;Section RAM (read only) :
+    9 00000000                 area             mesdata,data,readonly
+   10 00000000         
+   11 00000000         
+   12 00000000         ;Section RAM (read write):
+   13 00000000                 area             maram,data,readwrite
+   14 00000000         
+   15 00000000         
+   16 00000000         ;char FlagCligno;
+   17 00000000         
+   18 00000000 00000000 
+                       FlagCligno
+                               dcd              0
+   19 00000004         
+   20 00000004         
+   21 00000004         ; ======================================================
+                       =========================================
+   22 00000004         
+   23 00000004         
+   24 00000004         
+   25 00000004         
+   26 00000004         ;Section ROM code (read only) :  
+   27 00000004                 area             moncode,code,readonly
+   28 00000000         ; écrire le code ici  
+   29 00000000         
+   30 00000000         
+   31 00000000         ;void timer_callback(void)
+   32 00000000         ;{
+   33 00000000         
+   34 00000000         timer_callback
+                               proc
+   35 00000000         ; if (FlagCligno==1)
+   36 00000000         ; {
+   37 00000000         
+   38 00000000 4909            ldr              r1, =FlagCligno
+   39 00000002 6808            ldr              r0, [r1]
+   40 00000004 2801            cmp              r0, #1
+   41 00000006 D007            beq              toto
+   42 00000008         
+   43 00000008         
+   44 00000008         ; }
+   45 00000008         ; else
+   46 00000008         ; {
+   47 00000008         
+   48 00000008         ;  FlagCligno=1;
+   49 00000008 F04F 0001       mov              r0, #1
+   50 0000000C 6008            str              r0,[r1]
+   51 0000000E         ;  GPIOB_Clear(1);
+   52 0000000E F04F 0001       mov              r0, #1
+   53 00000012 F7FF FFFE       bl               GPIOB_Clear
+   54 00000016 4770            bx               lr
+
+
+
+ARM Macro Assembler    Page 2 
+
+
+   55 00000018         ; }
+   56 00000018         
+   57 00000018         toto
+   58 00000018         ;  FlagCligno=0;
+   59 00000018 F04F 0000       mov              r0, #0
+   60 0000001C 6008            str              r0,[r1]
+   61 0000001E         ;  GPIOB_Set(1);
+   62 0000001E F04F 0001       mov              r0, #1
+   63 00000022 F7FF FFFE       bl               GPIOB_Set
+   64 00000026 4770            bx               lr
+   65 00000028         
+   66 00000028                 endp
+   67 00000028         ;
+   68 00000028         ;
+   69 00000028         ;
+   70 00000028         ;
+   71 00000028         
+   72 00000028         
+   73 00000028         
+   74 00000028         
+   75 00000028         
+   76 00000028         
+   77 00000028                 END
+              00000000 
+Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M3 --apcs=interw
+ork --depend=.\obj\cligno.d -o.\obj\cligno.o -I.\RTE\_Simu -IC:\Programdata\Kei
+l\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\Core\Include -IC:\Programdata\Keil\Arm\Packs\
+Keil\STM32F1xx_DFP\2.3.0\Device\Include --predefine="__EVAL SETA 1" --predefine
+="__MICROLIB SETA 1" --predefine="__UVISION_VERSION SETA 534" --predefine="_RTE
+_ SETA 1" --predefine="STM32F10X_MD SETA 1" --predefine="_RTE_ SETA 1" --list=c
+ligno.lst Src\Cligno.s
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+mesdata 00000000
+
+Symbol: mesdata
+   Definitions
+      At line 9 in file Src\Cligno.s
+   Uses
+      None
+Comment: mesdata unused
+1 symbol
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+FlagCligno 00000000
+
+Symbol: FlagCligno
+   Definitions
+      At line 18 in file Src\Cligno.s
+   Uses
+      At line 38 in file Src\Cligno.s
+Comment: FlagCligno used once
+maram 00000000
+
+Symbol: maram
+   Definitions
+      At line 13 in file Src\Cligno.s
+   Uses
+      None
+Comment: maram unused
+2 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+moncode 00000000
+
+Symbol: moncode
+   Definitions
+      At line 27 in file Src\Cligno.s
+   Uses
+      None
+Comment: moncode unused
+timer_callback 00000000
+
+Symbol: timer_callback
+   Definitions
+      At line 34 in file Src\Cligno.s
+   Uses
+      At line 6 in file Src\Cligno.s
+Comment: timer_callback used once
+toto 00000018
+
+Symbol: toto
+   Definitions
+      At line 57 in file Src\Cligno.s
+   Uses
+      At line 41 in file Src\Cligno.s
+Comment: toto used once
+3 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+External symbols
+
+GPIOB_Clear 00000000
+
+Symbol: GPIOB_Clear
+   Definitions
+      At line 5 in file Src\Cligno.s
+   Uses
+      At line 53 in file Src\Cligno.s
+Comment: GPIOB_Clear used once
+GPIOB_Set 00000000
+
+Symbol: GPIOB_Set
+   Definitions
+      At line 4 in file Src\Cligno.s
+   Uses
+      At line 63 in file Src\Cligno.s
+Comment: GPIOB_Set used once
+2 symbols
+345 symbols in table
