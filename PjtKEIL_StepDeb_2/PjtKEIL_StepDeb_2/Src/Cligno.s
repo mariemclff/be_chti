@@ -50,7 +50,9 @@ timer_callback proc
 	str r0,[r1]
 ;		GPIOB_Clear(1);
 	mov r0, #1
+	push {lr,r0-r3}
 	bl GPIOB_Clear
+	pop {lr,r0-r3}
 	bx lr
 ;	}
 
@@ -60,7 +62,9 @@ toto
 	str r0,[r1]
 ;		GPIOB_Set(1);
 	mov r0, #1
+	push {lr,r0-r3}
 	bl GPIOB_Set
+	pop {lr,r0-r3}
 	bx lr
 	
 	endp
