@@ -3,6 +3,7 @@
 		
     import GPIOB_Set
 	import GPIOB_Clear
+	export FlagCligno
 	export timer_callback
 ; ====================== zone de réservation de données,  ======================================
 ;Section RAM (read only) :
