@@ -4,6 +4,8 @@
 	import LongueurSon
 	import Son
 		
+	include DriverJeuLaser.inc
+		
 	export SortieSon
 	export CallbackSon
 	export IndTable
@@ -23,8 +25,6 @@ IndTable dcd 0
 	
 ; ===============================================================================================
 	
-
-
 		
 ;Section ROM code (read only) :		
 	area    moncode,code,readonly
@@ -59,13 +59,18 @@ CallbackSon proc
 ;	Sortir Rx
 	
 	str r6, [r5]
+	
+	push {r0-r1}
+	mov r0, r6
+	bl PWM_Set_Value_TIM3_Ch3
+	pop {r0-r1}
 
 fin
 
 ;	IndTable ++ 
 	
-	add r2, #1
-	str r2, [r1]
+	add r0, #1
+	str r0, [r1]
 	
 	pop {lr, r4-r7}
 	

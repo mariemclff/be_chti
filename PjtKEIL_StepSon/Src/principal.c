@@ -20,7 +20,9 @@ Active_IT_Debordement_Timer(TIM4,2,CallbackSon);
 
 GPIO_Configure(GPIOB, 1, OUTPUT, OUTPUT_PPULL);
 
+PWM_Init_ff(TIM3, 3, 720);
 	
+GPIO_Configure(GPIOB, 0, OUTPUT, ALT_PPULL);
 	
 
 //============================================================================	
