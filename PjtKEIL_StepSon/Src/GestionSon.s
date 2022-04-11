@@ -30,6 +30,15 @@ IndTable dcd 0
 	area    moncode,code,readonly
 ; écrire le code ici	
 
+StartSon proc
+	; on met indice table à 0
+	push {lr}
+	mov r0, #0
+	str r0, [r1]	
+	pop {lr}
+	bx lr
+	endp 
+
 CallbackSon proc
 
 ;si (IndTable <= longueur plage)
@@ -41,7 +50,8 @@ CallbackSon proc
 	ldr r2, [r3] ; r2 contient valeur LongueurSon
 	
 	cmp r0, r2
-	bgt fin
+	bgt finTable
+	
 	
 	ldr r4, =Son ; r4 contient @ Son
 	
@@ -64,13 +74,16 @@ CallbackSon proc
 	mov r0, r6
 	bl PWM_Set_Value_TIM3_Ch3
 	pop {r0-r1}
-
-fin
-
-;	IndTable ++ 
 	
+	;	IndTable ++ 
 	add r0, #1
 	str r0, [r1]
+	bl fin
+	
+finTable
+	bl StartSon
+	
+fin
 	
 	pop {lr, r4-r7}
 	
