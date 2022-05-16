@@ -53,9 +53,11 @@ for
 	add r4, #1 ; on incrémente l'indice 
 	cmp r4, #64 
 	bne for
-
-	add r5, r10
-	mov r0, r5
+	
+	smull r1, r0, r5, r5
+	smlal r1, r0, r10, r10 ; 10.54 - 32 bit après la virgule --> 10.22
+	;add r5, r10
+	;mov r0, r5
 	pop  {r4-r10}
 	bx lr
 	endp
