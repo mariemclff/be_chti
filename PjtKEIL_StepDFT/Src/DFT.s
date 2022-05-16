@@ -26,40 +26,40 @@ Max equ 64 ; constante
 ; écrire le code ici		
 
 DFT_ModuleAuCarre proc
-	push {r0-r7}
-	mov r4, #0 ; r0 contient valeur IndTable
-	mov r2, #Max ; r2 contient la valeur de max
-	mov r5, #0 ; on initialise r5 à 0
+	push {r4-r10}
+	mov r4, #0 ; r4 contient valeur IndTable
+	mov r5, #0 ; on initialise r5 à 0 pour la partie réelle
+	mov r10, #0 ; pour la partie im
 	ldr r2, =TabCos
-	mov r7, #0
+	;ldr r8, = TabSin
+
 for
 
-	; le signal est donné en argument à r0
-	ldrsh r6, [r0, r4, lsl #1]; r4 = signal à l'indice indtab
+	; le signal est donné en argument à r0 et i à r1
+	ldrsh r6, [r0, r4, lsl #1]; r6 = signal à l'indice indtab
+	mul r7, r1, r4 ; r7 := i*indtab
+	and r7, #0x003F; mise en place du modulo 64 en utilisant les bits de point faible
 	
-	and r7, r4, #63; mise en place du modulo 64 pour TabCos
-		
-	ldrsh r3, [r2, r7, lsl #1] ; je vais chercher dans tabcos la valeur à l'indice indtab et je le met dans r3
-
+	;partie réelle
+	ldrsh r3, [r2, r7, lsl #1] ; je vais chercher dans tabcos la valeur à l'indice indtab et je le met dans r3 (1.15)
 	mul r3, r6 ; on mulriplie le signal(en 4.12) et le cos (en 1.15)
-
+	add r5, r3 ; format 5.27
 	
-	
-	add r5, r3 ; r3 est au format 5.27
-	 
+	;partie imaginaire
+	ldrsh r9, [r8, r6, lsl #1]; je vais chercher dans tabcos la valeur à l'indice indtab et je le met dans r9 (1.15)
+	mul r6, r9 ; on mulriplie le signal(en 4.12) et le sin (en 1.15) --> 5.27
+	add r10, r9 ; format 5.27
 	
 	add r4, #1 ; on incrémente l'indice 
-	cmp r4,r2 ; r4, r2 = int
-	
-	blt for
-	
+	cmp r4, #64 
+	bne for
+
+	add r5, r10
 	mov r0, r5
-	pop {r0-r7}
+	pop  {r4-r10}
 	bx lr
-	
 	endp
-		
-		
+			
 
 ;Section ROM code (read only) :		
 	AREA Trigo, DATA, READONLY

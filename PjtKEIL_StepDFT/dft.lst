@@ -36,64 +36,74 @@ ARM Macro Assembler    Page 1
    27 00000000         
    28 00000000         DFT_ModuleAuCarre
                                proc
-   29 00000000 B4FF            push             {r0-r7}
-   30 00000002 F04F 0400       mov              r4, #0      ; r0 contient valeu
+   29 00000000 E92D 07F0       push             {r4-r10}
+   30 00000004 F04F 0400       mov              r4, #0      ; r4 contient valeu
                                                             r IndTable
-   31 00000006 F04F 0240       mov              r2, #Max    ; r2 contient la va
-                                                            leur de max
-   32 0000000A F04F 0500       mov              r5, #0      ; on initialise r5 
-                                                            à 0
-   33 0000000E 4A09            ldr              r2, =TabCos
-   34 00000010 F04F 0700       mov              r7, #0
-   35 00000014         for
-   36 00000014         
-   37 00000014         ; le signal est donné en argument à r0
-   38 00000014 F930 6014       ldrsh            r6, [r0, r4, lsl #1] ; r4 = sig
+   31 00000008 F04F 0500       mov              r5, #0      ; on initialise r5 
+                                                            à 0 pour la partie 
+                                                            réelle
+   32 0000000C F04F 0A00       mov              r10, #0     ; pour la partie im
+                                                            
+   33 00000010 4A0C            ldr              r2, =TabCos
+   34 00000012         ;ldr r8, = TabSin
+   35 00000012         
+   36 00000012         for
+   37 00000012         
+   38 00000012         ; le signal est donné en argument à r0 et i à r1
+   39 00000012 F930 6014       ldrsh            r6, [r0, r4, lsl #1] ; r6 = sig
                                                             nal à l'indice indt
                                                             ab
-   39 00000018         
-   40 00000018 F004 073F       and              r7, r4, #63 ; mise en place du 
-                                                            modulo 64 pour TabC
-                                                            os
-   41 0000001C         
-   42 0000001C F932 3017       ldrsh            r3, [r2, r7, lsl #1] ; je vais 
+   40 00000016 FB01 F704       mul              r7, r1, r4  ; r7 := i*indtab
+   41 0000001A F007 073F       and              r7, #0x003F ; mise en place du 
+                                                            modulo 64 en utilis
+                                                            ant les bits de poi
+                                                            nt faible
+   42 0000001E         
+   43 0000001E         ;partie réelle
+   44 0000001E F932 3017       ldrsh            r3, [r2, r7, lsl #1] ; je vais 
                                                             chercher dans tabco
                                                             s la valeur à l'ind
-                                                            ice indtab et je le
-                                                             met dans r3
-   43 00000020         
-   44 00000020 FB03 F306       mul              r3, r6      ; on mulriplie le s
 
 
 
 ARM Macro Assembler    Page 2 
 
 
+                                                            ice indtab et je le
+                                                             met dans r3 (1.15)
+                                                            
+   45 00000022 FB03 F306       mul              r3, r6      ; on mulriplie le s
                                                             ignal(en 4.12) et l
                                                             e cos (en 1.15)
-   45 00000024         
-   46 00000024         
-   47 00000024         
-   48 00000024 441D            add              r5, r3      ; r3 est au format 
-                                                            5.27
-   49 00000026         
-   50 00000026         
-   51 00000026 F104 0401       add              r4, #1      ; on incrémente l'i
+   46 00000026 441D            add              r5, r3      ; format 5.27
+   47 00000028         
+   48 00000028         ;partie imaginaire
+   49 00000028 F938 9016       ldrsh            r9, [r8, r6, lsl #1] ; je vais 
+                                                            chercher dans tabco
+                                                            s la valeur à l'ind
+                                                            ice indtab et je le
+                                                             met dans r9 (1.15)
+                                                            
+   50 0000002C FB06 F609       mul              r6, r9      ; on mulriplie le s
+                                                            ignal(en 4.12) et l
+                                                            e sin (en 1.15) -->
+                                                             5.27
+   51 00000030 44CA            add              r10, r9     ; format 5.27
+   52 00000032         
+   53 00000032 F104 0401       add              r4, #1      ; on incrémente l'i
                                                             ndice 
-   52 0000002A 4294            cmp              r4,r2       ; r4, r2 = int
-   53 0000002C         
-   54 0000002C DBF2            blt              for
-   55 0000002E         
-   56 0000002E 4628            mov              r0, r5
-   57 00000030 BCFF            pop              {r0-r7}
-   58 00000032 4770            bx               lr
-   59 00000034         
-   60 00000034                 endp
-   61 00000034         
-   62 00000034         
-   63 00000034         
-   64 00000034         ;Section ROM code (read only) :  
-   65 00000034 00000000        AREA             Trigo, DATA, READONLY
+   54 00000036 2C40            cmp              r4, #64
+   55 00000038 D1EB            bne              for
+   56 0000003A         
+   57 0000003A 4455            add              r5, r10
+   58 0000003C 4628            mov              r0, r5
+   59 0000003E E8BD 07F0       pop              {r4-r10}
+   60 00000042 4770            bx               lr
+   61 00000044                 endp
+   62 00000044         
+   63 00000044         
+   64 00000044         ;Section ROM code (read only) :  
+   65 00000044 00000000        AREA             Trigo, DATA, READONLY
    66 00000000         ; codage fractionnaire 1.15
    67 00000000         
    68 00000000         
@@ -118,6 +128,12 @@ ARM Macro Assembler    Page 2
                                                             9
    79 00000012 34 51           DCW              20788       ;  9 0x5134  0.6344
                                                             0
+
+
+
+ARM Macro Assembler    Page 3 
+
+
    80 00000014 1D 47           DCW              18205       ; 10 0x471d  0.5555
                                                             7
    81 00000016 57 3C           DCW              15447       ; 11 0x3c57  0.4714
@@ -128,12 +144,6 @@ ARM Macro Assembler    Page 2
                                                             8
    84 0000001C F9 18           DCW              6393        ; 14 0x18f9  0.1951
                                                             0
-
-
-
-ARM Macro Assembler    Page 3 
-
-
    85 0000001E 8C 0C           DCW              3212        ; 15 0x0c8c  0.0980
                                                             2
    86 00000020 00 00           DCW              0           ; 16 0x0000  0.0000
@@ -183,6 +193,12 @@ ARM Macro Assembler    Page 3
   108 0000004C 92 95           DCW              -27246      ; 38 0x9592 -0.8314
                                                             8
   109 0000004E 0E 9D           DCW              -25330      ; 39 0x9d0e -0.7730
+
+
+
+ARM Macro Assembler    Page 4 
+
+
                                                             1
   110 00000050 7E A5           DCW              -23170      ; 40 0xa57e -0.7070
                                                             9
@@ -193,12 +209,6 @@ ARM Macro Assembler    Page 3
   113 00000056 A9 C3           DCW              -15447      ; 43 0xc3a9 -0.4714
                                                             1
   114 00000058 04 CF           DCW              -12540      ; 44 0xcf04 -0.3826
-
-
-
-ARM Macro Assembler    Page 4 
-
-
                                                             9
   115 0000005A D8 DA           DCW              -9512       ; 45 0xdad8 -0.2902
                                                             8
@@ -248,6 +258,12 @@ ARM Macro Assembler    Page 4
   138 00000086 28 25           DCW              9512        ;  3 0x2528  0.2902
                                                             8
   139 00000088 FC 30           DCW              12540       ;  4 0x30fc  0.3826
+
+
+
+ARM Macro Assembler    Page 5 
+
+
                                                             9
   140 0000008A 57 3C           DCW              15447       ;  5 0x3c57  0.4714
                                                             1
@@ -258,12 +274,6 @@ ARM Macro Assembler    Page 4
   143 00000090 82 5A           DCW              23170       ;  8 0x5a82  0.7070
                                                             9
   144 00000092 F2 62           DCW              25330       ;  9 0x62f2  0.7730
-
-
-
-ARM Macro Assembler    Page 5 
-
-
                                                             1
   145 00000094 6E 6A           DCW              27246       ; 10 0x6a6e  0.8314
                                                             8
@@ -313,6 +323,12 @@ ARM Macro Assembler    Page 5
                                                             0
   168 000000C2 74 F3           DCW              -3212       ; 33 0xf374 -0.0980
                                                             2
+
+
+
+ARM Macro Assembler    Page 6 
+
+
   169 000000C4 07 E7           DCW              -6393       ; 34 0xe707 -0.1951
                                                             0
   170 000000C6 D8 DA           DCW              -9512       ; 35 0xdad8 -0.2902
@@ -323,12 +339,6 @@ ARM Macro Assembler    Page 5
                                                             1
   173 000000CC E3 B8           DCW              -18205      ; 38 0xb8e3 -0.5555
                                                             7
-
-
-
-ARM Macro Assembler    Page 6 
-
-
   174 000000CE CC AE           DCW              -20788      ; 39 0xaecc -0.6344
                                                             0
   175 000000D0 7E A5           DCW              -23170      ; 40 0xa57e -0.7070
@@ -378,6 +388,12 @@ ARM Macro Assembler    Page 6
   197 000000FC 07 E7           DCW              -6393       ; 62 0xe707 -0.1951
                                                             0
   198 000000FE 74 F3           DCW              -3212       ; 63 0xf374 -0.0980
+
+
+
+ARM Macro Assembler    Page 7 
+
+
                                                             2
   199 00000100         
   200 00000100         
@@ -388,12 +404,6 @@ Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M3 --apcs=interw
 ork --depend=.\obj\dft.d -o.\obj\dft.o -I.\RTE\_Simu -IC:\Programdata\Keil\Arm\
 Packs\ARM\CMSIS\5.7.0\CMSIS\Core\Include -IC:\Programdata\Keil\Arm\Packs\Keil\S
 TM32F1xx_DFP\2.3.0\Device\Include --predefine="__EVAL SETA 1" --predefine="__MI
-
-
-
-ARM Macro Assembler    Page 7 
-
-
 CROLIB SETA 1" --predefine="__UVISION_VERSION SETA 534" --predefine="_RTE_ SETA
  1" --predefine="STM32F10X_MD SETA 1" --predefine="_RTE_ SETA 1" --list=dft.lst
  Src\DFT.s
@@ -441,13 +451,13 @@ Symbol: DFT_ModuleAuCarre
    Uses
       At line 5 in file Src\DFT.s
 Comment: DFT_ModuleAuCarre used once
-for 00000014
+for 00000012
 
 Symbol: for
    Definitions
-      At line 35 in file Src\DFT.s
+      At line 36 in file Src\DFT.s
    Uses
-      At line 54 in file Src\DFT.s
+      At line 55 in file Src\DFT.s
 Comment: for used once
 moncode 00000000
 
@@ -501,8 +511,8 @@ Symbol: Max
    Definitions
       At line 17 in file Src\DFT.s
    Uses
-      At line 31 in file Src\DFT.s
-Comment: Max used once
+      None
+Comment: Max unused
 1 symbol
 
 
