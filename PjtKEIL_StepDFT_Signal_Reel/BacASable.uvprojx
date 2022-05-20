@@ -421,6 +421,26 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>Son</GroupName>
+          <Files>
+            <File>
+              <FileName>bruitverre.asm</FileName>
+              <FileType>2</FileType>
+              <FilePath>.\Src\bruitverre.asm</FilePath>
+            </File>
+            <File>
+              <FileName>GestionSon.s</FileName>
+              <FileType>2</FileType>
+              <FilePath>.\Src\GestionSon.s</FilePath>
+            </File>
+            <File>
+              <FileName>sony.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Src\sony.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>::CMSIS</GroupName>
         </Group>
       </Groups>
@@ -776,7 +796,7 @@
               <MiscControls></MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath></IncludePath>
+              <IncludePath>.\Driver</IncludePath>
             </VariousControls>
           </Aads>
           <LDads>
@@ -836,6 +856,26 @@
               <FileName>DriverJeuLaser.lib</FileName>
               <FileType>4</FileType>
               <FilePath>.\Driver\DriverJeuLaser.lib</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Son</GroupName>
+          <Files>
+            <File>
+              <FileName>bruitverre.asm</FileName>
+              <FileType>2</FileType>
+              <FilePath>.\Src\bruitverre.asm</FilePath>
+            </File>
+            <File>
+              <FileName>GestionSon.s</FileName>
+              <FileType>2</FileType>
+              <FilePath>.\Src\GestionSon.s</FilePath>
+            </File>
+            <File>
+              <FileName>sony.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Src\sony.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -1328,6 +1368,26 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>Son</GroupName>
+          <Files>
+            <File>
+              <FileName>bruitverre.asm</FileName>
+              <FileType>2</FileType>
+              <FilePath>.\Src\bruitverre.asm</FilePath>
+            </File>
+            <File>
+              <FileName>GestionSon.s</FileName>
+              <FileType>2</FileType>
+              <FilePath>.\Src\GestionSon.s</FilePath>
+            </File>
+            <File>
+              <FileName>sony.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Src\sony.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>::CMSIS</GroupName>
         </Group>
       </Groups>
@@ -1352,7 +1412,7 @@
   <LayerInfo>
     <Layers>
       <Layer>
-        <LayName>&lt;Project Info&gt;</LayName>
+        <LayName>BacASable</LayName>
         <LayTarg>0</LayTarg>
         <LayPrjMark>1</LayPrjMark>
       </Layer>

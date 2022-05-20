@@ -1,11 +1,13 @@
 
 #include "DriverJeuLaser.h"
-
+#include "sony.h"
+#include "DriverJeuLaser.h"
 int DFT_ModuleAuCarre(short int * signal, int index);
 void systick_callback(void);
 
 extern short int LeSignal;
 short int dma_buf[64];
+
 
 
 // tableau de 64 cases et on met les calculs avec les 64 k
@@ -39,8 +41,13 @@ SysTick_Enable_IT ;
 
 	
 	
-	
-	
+// config son
+Timer_1234_Init_ff(TIM4, 6522);
+Active_IT_Debordement_Timer(TIM4,2, CallbackSon);
+PWM_Init_ff(TIM3,3,720);
+GPIO_Configure(GPIOB,0, OUTPUT, ALT_PPULL);
+
+
 
 //============================================================================	
 	
@@ -50,16 +57,30 @@ while	(1)
 	}
 }
 void systick_callback(void){
-
+	int joueur[4];
 	Start_DMA1(64);
 	Wait_On_End_Of_DMA1();
 	Stop_DMA1;
 	
 	for (int i = 0; i<64; i++){
+		
 		tab[i] = DFT_ModuleAuCarre( dma_buf , i) ;
 		//on tst on vérifie que nous avons bien 16 à k=1, k=63
-
-	}
-	
-
+		}
+if (tab[17] > 0x9999A){
+			joueur[0] +=1;
+		StartSon();
+			}
+		if (tab[19] > 0x9999A ){
+			joueur[1] +=1;
+			StartSon();
+			}
+		if (tab[23] > 0x9999A ){
+			joueur[2] +=1;
+			StartSon();
+			}
+		if (tab[24] > 0x9999A ){
+			joueur[3] +=1;
+			StartSon();
+			}
 }
