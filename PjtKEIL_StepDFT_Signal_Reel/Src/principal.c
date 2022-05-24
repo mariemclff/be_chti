@@ -7,7 +7,9 @@ void systick_callback(void);
 
 extern short int LeSignal;
 short int dma_buf[64];
-
+int joueur = -1;
+int n =0;
+int score[4];
 
 
 // tableau de 64 cases et on met les calculs avec les 64 k
@@ -28,7 +30,7 @@ Systick_Period_ff(36000);
 Systick_Prio_IT( 2 , 	systick_callback);
 SysTick_On ;
 	
-	
+
 Init_TimingADC_ActiveADC_ff( ADC1, 72);
 	//72 périodes d'horloge à 72MHz donne 1µs).
 Single_Channel_ADC( ADC1, 2 );
@@ -57,30 +59,71 @@ while	(1)
 	}
 }
 void systick_callback(void){
-	int joueur[4];
+	
 	Start_DMA1(64);
 	Wait_On_End_Of_DMA1();
 	Stop_DMA1;
+	
 	
 	for (int i = 0; i<64; i++){
 		
 		tab[i] = DFT_ModuleAuCarre( dma_buf , i) ;
 		//on tst on vérifie que nous avons bien 16 à k=1, k=63
 		}
-if (tab[17] > 0x9999A){
-			joueur[0] +=1;
-		StartSon();
-			}
-		if (tab[19] > 0x9999A ){
-			joueur[1] +=1;
+if (tab[17] > 0x000F12BA){
+	if(joueur==0) {
+		n++;
+		if (n==15){
+			score[0]++;
+			n=0;
 			StartSon();
-			}
-		if (tab[23] > 0x9999A ){
-			joueur[2] +=1;
-			StartSon();
-			}
-		if (tab[24] > 0x9999A ){
-			joueur[3] +=1;
-			StartSon();
-			}
+		}
+	}else{
+		joueur = 0;
+		n=0;
+	}
 }
+else if (tab[19] > 0x000F12BA){
+	if(joueur==1) {
+		n++;
+		if (n==15){
+			score[1]++;
+			n=0;
+			StartSon();
+		}
+	}else{
+		joueur = ;
+		n=0;
+	}
+}
+
+else if (tab[23] > 0x000F12BA){
+	if(joueur==2) {
+		n++;
+		if (n==15){
+			score[2]++;
+			n=0;
+			StartSon();
+		}
+	}else{
+		joueur = 2;
+		n=0;
+	}
+}else if (tab[24] > 0x000F12BA){
+	if(joueur==3) {
+		n++;
+		if (n==15){
+			score[3]++;
+			n=0;
+			StartSon();
+		}
+	}else{
+		joueur = 3;
+		n=0;
+	}
+}
+}
+
+
+			
+		

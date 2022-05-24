@@ -9,6 +9,7 @@
 	export SortieSon
 	export CallbackSon
 	export IndTable
+	export StartSon
 
 ; ====================== zone de réservation de données,  ======================================
 ;Section RAM (read only) :
